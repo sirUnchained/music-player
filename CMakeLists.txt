@@ -11,6 +11,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(SFML 2.5 REQUIRED COMPONENTS audio system)
+
 
 set(PROJECT_SOURCES
         main.cpp
@@ -42,7 +44,8 @@ else()
     endif()
 endif()
 
-target_link_libraries(music_player PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(music_player PRIVATE Qt${QT_VERSION_MAJOR}::Widgets sfml-audio sfml-system)
+target_include_directories(music_player PRIVATE ${SFML_INCLUDE_DIR})
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

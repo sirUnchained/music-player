@@ -6,8 +6,11 @@
 #include <QLabel>
 #include <QMainWindow>
 #include <QPushButton>
+#include <QSlider>
 #include <QVBoxLayout>
 #include <QWidget>
+
+#include <SFML/Audio.hpp>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -26,10 +29,18 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    QLabel *musicName;
+    QLabel *musicName, *musicTimer;
     QWidget *page;
-    QVBoxLayout *mainLayout;
+    QVBoxLayout *mainLayout, *musicInfo;
     QHBoxLayout *musicOptionsLayout;
     QPushButton *playBtn, *tenSecUp, *tenSecDown, *choseSong;
+    QSlider *musicPlace;
+
+    bool isPlaying{false};
+    sf::Music music;
+
+    void playPauseMusic();
+    void forward10Sec();
+    void backward10Sec();
 };
 #endif // MAINWINDOW_H
