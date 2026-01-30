@@ -37,7 +37,7 @@ private:
     QVBoxLayout *mainLayout, *musicInfo;
     QHBoxLayout *musicOptionsLayout;
     QPushButton *playBtn, *tenSecUp, *tenSecDown, *choseSong;
-    QSlider *musicPlace;
+    QSlider *musicSeek;
     QTimer *timer;
 
     bool isPlaying{false};

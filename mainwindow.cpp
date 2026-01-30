@@ -7,27 +7,22 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setWindowTitle("Music Player");
     resize(800, 600);
-
     setCentralWidget(page);
 
+    // setup layots
     mainLayout = new QVBoxLayout(page);
     musicOptionsLayout = new QHBoxLayout();
     musicInfo = new QVBoxLayout();
 
+    // setup buttons
     playBtn = new QPushButton("play");
     tenSecUp = new QPushButton("+10");
     tenSecDown = new QPushButton("-10");
     choseSong = new QPushButton("select sound ...");
 
+    // setup labels
     musicName = new QLabel("Welcome !!");
     musicTimer = new QLabel("00:00 / 00:00");
-
-    musicPlace = new QSlider(Qt::Horizontal);
-    musicPlace->setPageStep(1);
-    musicPlace->setRange(0, 100);
-
-    timer = new QTimer(page);
-    timer->setInterval(1000); // 1000ms = 1 second
 
     musicName->setAlignment(Qt::AlignCenter);
     musicName->setMargin(50);
@@ -40,12 +35,22 @@ MainWindow::MainWindow(QWidget *parent)
 
     musicTimer->setAlignment(Qt::AlignCenter);
 
+    // setup slider
+    musicSeek = new QSlider(Qt::Horizontal);
+    musicSeek->setPageStep(1);
+    musicSeek->setRange(0, 100);
+
+    // setup a timer
+    timer = new QTimer(page);
+    timer->setInterval(1000); // 1000ms = 1 second
+
+    // add  and set widgets/layouts
     musicOptionsLayout->addWidget(tenSecDown);
     musicOptionsLayout->addWidget(playBtn);
     musicOptionsLayout->addWidget(tenSecUp);
 
     musicInfo->addWidget(musicTimer);
-    musicInfo->addWidget(musicPlace);
+    musicInfo->addWidget(musicSeek);
     musicInfo->setSpacing(0);
 
     mainLayout->addWidget(musicName);
@@ -57,11 +62,12 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout->setSpacing(100);
     mainLayout->addStretch();
 
+    // set signals and slots
     connect(playBtn, &QPushButton::clicked, this, &MainWindow::playPauseMusic);
     connect(tenSecUp, &QPushButton::clicked, this, &MainWindow::forward10Sec);
     connect(tenSecDown, &QPushButton::clicked, this, &MainWindow::backward10Sec);
     connect(choseSong, &QPushButton::clicked, this, &MainWindow::selectMusic);
-    connect(musicPlace, &QSlider::sliderReleased, this, &MainWindow::changeMusicTime);
+    connect(musicSeek, &QSlider::sliderReleased, this, &MainWindow::changeMusicTime);
     connect(timer, &QTimer::timeout, this, &MainWindow::updateMusicInfo);
 }
 
@@ -160,9 +166,9 @@ void MainWindow::updateMusicInfo()
         if (musicTime > 0) {
             // using floating-point division for accurate percentage
             float progress = (static_cast<float>(timePerSec) / musicTime) * 100.0f;
-            musicPlace->setValue(static_cast<int>(progress));
+            musicSeek->setValue(static_cast<int>(progress));
         } else {
-            musicPlace->setValue(0);
+            musicSeek->setValue(0);
         }
 
         // format as MM:SS
@@ -181,7 +187,7 @@ void MainWindow::updateMusicInfo()
 void MainWindow::changeMusicTime()
 {
     // 'time' is slider value (0-100), convert to seconds
-    int time = musicPlace->value();
+    int time = musicSeek->value();
     sf::Time total = music.getDuration();
     float musicTime = total.asSeconds();
 
