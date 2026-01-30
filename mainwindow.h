@@ -1,10 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QFileDialog>
 #include <QFont>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QSlider>
 #include <QVBoxLayout>
@@ -42,5 +44,7 @@ private:
     void playPauseMusic();
     void forward10Sec();
     void backward10Sec();
+    void selectMusic();
+    void updateMusicInfo();
 };
 #endif // MAINWINDOW_H
