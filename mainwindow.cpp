@@ -23,6 +23,11 @@ MainWindow::MainWindow(QWidget *parent)
     musicTimer = new QLabel("00:00 / 00:00");
 
     musicPlace = new QSlider(Qt::Horizontal);
+    musicPlace->setPageStep(1);
+    musicPlace->setRange(0, 100);
+
+    timer = new QTimer(page);
+    timer->setInterval(1000); // 1000ms = 1 second
 
     musicName->setAlignment(Qt::AlignCenter);
     musicName->setMargin(50);
@@ -56,6 +61,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(tenSecUp, &QPushButton::clicked, this, &MainWindow::forward10Sec);
     connect(tenSecDown, &QPushButton::clicked, this, &MainWindow::backward10Sec);
     connect(choseSong, &QPushButton::clicked, this, &MainWindow::selectMusic);
+    connect(musicPlace, &QSlider::sliderReleased, this, &MainWindow::changeMusicTime);
+    connect(timer, &QTimer::timeout, this, &MainWindow::updateMusicInfo);
 }
 
 MainWindow::~MainWindow()
@@ -70,12 +77,14 @@ void MainWindow::playPauseMusic()
         music.pause(); // stop it
         playBtn->setText("Play");
         isPlaying = false;
+        timer->stop();
     }
     // if music is not playing
     else {
         music.play(); // play it
         playBtn->setText("Pause");
         isPlaying = true;
+        timer->start();
     }
 }
 
@@ -166,5 +175,26 @@ void MainWindow::updateMusicInfo()
                                 .arg(musicTime % 60, 2, 10, QChar('0'));
 
         musicTimer->setText(currentTime + " / " + totalTime);
+    }
+}
+
+void MainWindow::changeMusicTime()
+{
+    // 'time' is slider value (0-100), convert to seconds
+    int time = musicPlace->value();
+    sf::Time total = music.getDuration();
+    float musicTime = total.asSeconds();
+
+    // Prevent division by zero and ensure music is loaded
+    if (musicTime > 0.1f && music.getStatus() != sf::Music::Stopped) {
+        float seekPosition = (time / 100.0f) * musicTime;
+
+        // set the new playing position
+        music.setPlayingOffset(sf::seconds(seekPosition));
+
+        // update UI immediately
+        updateMusicInfo();
+
+        qDebug() << "Seek to:" << seekPosition << "seconds, slider value:" << time;
     }
 }

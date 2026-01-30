@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSlider>
+#include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -37,14 +38,17 @@ private:
     QHBoxLayout *musicOptionsLayout;
     QPushButton *playBtn, *tenSecUp, *tenSecDown, *choseSong;
     QSlider *musicPlace;
+    QTimer *timer;
 
     bool isPlaying{false};
     sf::Music music;
 
+private slots:
     void playPauseMusic();
     void forward10Sec();
     void backward10Sec();
     void selectMusic();
     void updateMusicInfo();
+    void changeMusicTime();
 };
 #endif // MAINWINDOW_H
